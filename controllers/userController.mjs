@@ -1,15 +1,23 @@
 import User from "../models/userModel.mjs";
-import byrcpt from "bcrypt"
+import byrcpt from "bcrypt";
+import jwt from "jsonwebtoken";
+// import dotenv from "dotenv";
+// dotenv.config();
+
 
 const createUser = async (req,res) => {
    try{
     const users = await User.create(req.body) 
-    res.status(201).json({
-        succeded:"true",
-        users
-    })
+    res.redirect("/login")
    }
    catch(error){
+    let errors2 = {};
+    if(error.name === "ValidationError"){
+        Object.keys(error.errors).forEach((key)=>{
+            errors2.key = error.errors[key].message;
+        })
+    }
+    console.log(errors2);
     res.status(500).json({
         succeded:false,
         error
@@ -33,7 +41,12 @@ const loginUser = async (req,res) => {
         })
      }
      if(isSame){
-        res.status(200).send("You are logged in")
+        const token = createToken(user._id);
+        res.cookie("jwt",token,{
+            httpOnly:true,
+            maxAge:1000*60*60*24
+        })
+        res.redirect("/users/dashboard")
      }
      else{
         res.status(401).json({
@@ -46,9 +59,17 @@ const loginUser = async (req,res) => {
     catch(error){
      res.status(500).json({
          succeded:false,
-         error
+         error:error.message
  
      })
     }
  }
-export {createUser,loginUser}
+ const createToken = (userId) => {
+   return jwt.sign({userId},process.env.JWT_WEB_TOKEN,{expiresIn:"1d"});
+ }
+ const getDashboardPage = (req,res) => {
+    res.render("dashboard",{
+        link:"dashboard"
+    })
+}
+export {createUser,loginUser,getDashboardPage}
