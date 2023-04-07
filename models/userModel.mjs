@@ -20,7 +20,8 @@ const userSchema = new mongoose.Schema({
       required:[true,"Password is important"],
       minLength:[4,"At least 4 caracters"],
       default:Date.now,
-    }
+    },
+    photos:[]
 
 },
  {

@@ -21,12 +21,12 @@
                 <span>01</span>
                 <h2 style="font-size: 24px;"><%= photo.name %></h2>
                 <p><%= photo.description %> </p>
-                <a class="read_more" href="about.html">Read More</a>
+                <a class="read_more" href="about.html"><%= photo.user.userName %></a>
               </div>
             </div>
             <div class="col-md-6">
               <div class="about_img">
-                <figure><img src="images/about_img.png" alt="#"/></figure>
+                <figure><img src="<%= photo.url %>" alt="<%= photo.name %>"/></figure>
               </div>
             </div>
           </div>

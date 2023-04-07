@@ -1,6 +1,7 @@
 import User from "../models/userModel.mjs";
 import byrcpt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Photo from "../models/photoModel.mjs";
 // import dotenv from "dotenv";
 // dotenv.config();
 
@@ -8,21 +9,22 @@ import jwt from "jsonwebtoken";
 const createUser = async (req,res) => {
    try{
     const users = await User.create(req.body) 
-    res.redirect("/login")
+    res.status(200).json({
+        user:users._id
+    })
    }
    catch(error){
     let errors2 = {};
+    if(error.code === 11000){
+        errors2.email = "This email have been registered."
+    }
     if(error.name === "ValidationError"){
         Object.keys(error.errors).forEach((key)=>{
-            errors2.key = error.errors[key].message;
+            errors2[key] = error.errors[key].message;
         })
     }
     console.log(errors2);
-    res.status(500).json({
-        succeded:false,
-        error
-
-    })
+    res.status(400).json(errors2)
    }
 }
 const loginUser = async (req,res) => {
@@ -67,9 +69,47 @@ const loginUser = async (req,res) => {
  const createToken = (userId) => {
    return jwt.sign({userId},process.env.JWT_WEB_TOKEN,{expiresIn:"1d"});
  }
- const getDashboardPage = (req,res) => {
+ const getDashboardPage = async (req,res) => {
+    const photos = await Photo.find({user:res.locals.user._id})
     res.render("dashboard",{
-        link:"dashboard"
+        link:"dashboard",
+        photos
     })
 }
-export {createUser,loginUser,getDashboardPage}
+const getAllUsers = async (req, res) => {
+    try {
+      const users = await User.find({ _id: { $ne: res.locals.user._id } });
+      const photos = Photo.find({user: res.locals.user._id })
+      res.status(200).render('users', {
+        users,
+        photos,
+        link: 'users',
+      });
+    } catch (error) {
+      res.status(500).json({
+        succeded: false,
+        error,
+      });
+    }
+  };
+ const getAUser = async (req,res) => {
+    try{
+        const photos = await Photo.find({user: res.locals.user._id })
+
+     const user = await User.findById({_id:res.locals.user._id})
+     res.status(200).render("users",{
+        user,
+        photos,
+        link:"users"
+     })
+    }
+    catch(error){
+     res.status(500).json({
+         succeded:false,
+         error:error.message
+ 
+     })
+     console.log(error)
+    }
+ }
+export {createUser,loginUser,getDashboardPage,getAllUsers,getAUser}

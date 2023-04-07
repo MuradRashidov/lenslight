@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-//const {Schema} = mongoose.Schema;
+const {Schema} = mongoose.Schema;
 const photoSchema = new mongoose.Schema({
     name:{
         type:String,
@@ -13,7 +13,17 @@ const photoSchema = new mongoose.Schema({
     uploadeAt:{
       type:Date,
       default:Date.now
-    }
+    },
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    },
+    url:{
+        type:String,
+        required:true
+    },
+    //_id: mongoose.Schema.Types.ObjectId,
+
 
 });
 
