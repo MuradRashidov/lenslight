@@ -79,7 +79,10 @@ const loginUser = async (req,res) => {
 const getAllUsers = async (req, res) => {
     try {
       const users = await User.find({ _id: { $ne: res.locals.user._id } });
-      const photos = Photo.find({user: res.locals.user._id })
+    users.forEach(user=>console.log(user._id))
+      const photos = await Photo.find({user: res.locals.user._id })
+     // console.log(photos)
+
       res.status(200).render('users', {
         users,
         photos,
@@ -94,10 +97,10 @@ const getAllUsers = async (req, res) => {
   };
  const getAUser = async (req,res) => {
     try{
-        const photos = await Photo.find({user: res.locals.user._id })
+        const photos = await Photo.find({user: req.params.id })
 
-     const user = await User.findById({_id:res.locals.user._id})
-     res.status(200).render("users",{
+     const user = await User.findById({_id:req.params.id})
+     res.status(200).render("user",{
         user,
         photos,
         link:"users"

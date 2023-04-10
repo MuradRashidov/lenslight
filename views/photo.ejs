@@ -21,7 +21,7 @@
                 <span>01</span>
                 <h2 style="font-size: 24px;"><%= photo.name %></h2>
                 <p><%= photo.description %> </p>
-                <a class="read_more" href="about.html"><%= photo.user.userName %></a>
+                <a class="read_more" href="/users/<%= photo.user._id %>"><%= photo.user.userName %></a>
               </div>
             </div>
             <div class="col-md-6">
