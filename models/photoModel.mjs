@@ -22,6 +22,9 @@ const photoSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    image_id:{
+        type:String
+    }
     //_id: mongoose.Schema.Types.ObjectId,
 
 

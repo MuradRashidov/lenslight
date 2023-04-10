@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt"
 import validator from "validator";
 //const {Schema} = mongoose.Schema;
@@ -21,8 +21,18 @@ const userSchema = new mongoose.Schema({
       minLength:[4,"At least 4 caracters"],
       default:Date.now,
     },
-    photos:[]
-
+    followers:[
+        {
+            type: Schema.Types.ObjectId,
+            ref:"User"
+        }
+    ],
+    followings:[
+        {
+            type: Schema.Types.ObjectId,
+            ref:"User"
+        }
+    ]
 },
  {
     timestamps:true

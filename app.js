@@ -1,5 +1,6 @@
 import express from "express";
 //import mongoose from "mongoose";
+import methodOverride from "method-override"
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDataBase from "./connectDataBase.js";
@@ -27,7 +28,10 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
-app.use(fileUpload({useTempFiles:true}))
+app.use(fileUpload({useTempFiles:true}));
+app.use(methodOverride('_method',{
+    methods:["POST","GET"]
+}))
 app.set("view engine","ejs");
 // app.get("/", (req,res) => res.render("index"));
 // app.get("/about", (req,res) => res.render("index"));
